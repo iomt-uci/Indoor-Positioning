@@ -3,7 +3,7 @@
 
 
  // Replace with your network credentials
-const char* ssid     = "ESP32-Access-Point";
+const char* ssid     = "ESP32-AP00";
 const char* password = "123456789";
 
 
