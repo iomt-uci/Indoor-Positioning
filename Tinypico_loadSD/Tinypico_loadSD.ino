@@ -14,17 +14,22 @@
 // Define CS pin for the SD card module
 #define SD_CS 5
 
+
+// Initial Timestamp
+unsigned long init_time = millis();
+
 // Save reading number on RTC memory
 RTC_DATA_ATTR int readingID = 0;
 double rssi = 0;
-int room_num = 0; // CT Room
+String room_num = "0.0"; // CT Room
 String ssid;
 String dataMessage;
 
 void setup() {
   // Start serial communication for debugging purposes
   Serial.begin(115200);
-
+  Serial.print("init time");
+  Serial.println(init_time);
 
   // Initialize WiFi
   WiFi.mode(WIFI_STA);
@@ -68,7 +73,13 @@ void setup() {
 void loop() {
   // The ESP32 will be in deep sleep
   // it never reaches the loop()
-  load_Data();
+  unsigned long end_time = millis();
+  if(end_time < init_time + 300000){
+    load_Data();
+    Serial.print("end time");
+    Serial.println(end_time);
+  }
+  
 }
 
 // Function to get RSSI
@@ -84,11 +95,11 @@ void load_Data(){
             // Print SSID and RSSI for each network found
             
             rssi = WiFi.RSSI(i);
-            if(rssi >= -90){
+            ssid = WiFi.SSID(i);
+            if(rssi >= -90 && ssid.length() == 10 && ssid.substring(0,8) == "ESP32-AP" ){
               Serial.print(i + 1);
               Serial.print(": ");
-              Serial.print(WiFi.SSID(i));
-              ssid = WiFi.SSID(i);
+              Serial.print(ssid);
               Serial.print(" (RSSI:");
               double dis = pow(10,((abs(-rssi)-52)/(2*10)));
               Serial.print(rssi);
@@ -107,12 +118,12 @@ void load_Data(){
 
     // Wait a bit before scanning again
     readingID ++;
-    delay(5000);
+    delay(1000);
 }
 
 // Write the sensor readings on the SD card
 void logSDCard() {
-  dataMessage = String(readingID) + "," + ssid + "," + String(rssi) + "," +String(room_num) + "\r\n";
+  dataMessage = String(readingID) + "," + ssid + "," + String(rssi) + "," + room_num + "\r\n";
   Serial.print("Save data: ");
   Serial.println(dataMessage);
   appendFile(SD, "/RSSI_data.txt", dataMessage.c_str());
