@@ -77,7 +77,7 @@ void loop() {
   // it never reaches the loop()
   if(count < 100){
     load_Data();
-    count++;
+    
     Serial.print("Count: ");
     Serial.println(count);
   }
@@ -99,6 +99,7 @@ void load_Data(){
             rssi = WiFi.RSSI(i);
             ssid = WiFi.SSID(i);
             if(ssid.length() == 10 && ssid.substring(0,8) == "ESP32-AP" ){
+              count++;
               logSDCard();
             }
             
