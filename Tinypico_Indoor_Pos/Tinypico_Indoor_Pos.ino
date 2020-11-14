@@ -5,17 +5,17 @@
 
 double rssi = 0;
 String ssid;
-String device_Name = "Device 0";
+String device_Name = "Device 1";
 String Tmp_Output = "";
 String Tmp_user_Output = "";
-const char* APssid     = "ESP32-USR00";
+const char* APssid     = "ESP32-USR01";
 const char* APpassword = "123456789";
 
-const char* STAssid = "ORBI12";
-const char* STApassword =  "coolmango116";
+const char* STAssid = "VALIMAR CLUB";
+const char* STApassword =  "PUBG123319";
 
 double ESP_AP[8] = {-90,-90,-90,-90,-90,-90,-90,-90};
-double ESP_USR[3] = {-90,-90,-90}
+double ESP_USR[3] = {-90,-90,-90};
 WiFiServer server1(80);
 WebServer server2(80);
 
@@ -109,7 +109,6 @@ void loop()
                 int temp_ind = (ssid.substring(8,10)).toInt();
                 Serial.print(temp_ind);
                 ESP_AP[temp_ind] = rssi;
-                ESP_USR[temp_ind] = rssi;
                 Serial.print(": SSID: ");
                 Serial.print(ssid);
                 Serial.print(" RSSI: ");
@@ -182,14 +181,9 @@ String SendHTML(uint8_t led1stat,uint8_t led2stat){
   String ptr = "<!DOCTYPE html> <html>\n";
   ptr +="<meta http-equiv=\"refresh\" content=\"5\">";
   ptr +="<head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, user-scalable=no\">\n";
-  ptr +="<title>LED Control</title>\n";
+  ptr +="<title>Position Data</title>\n";
   ptr +="<style>html { font-family: Helvetica; display: inline-block; margin: 0px auto; text-align: center;}\n";
   ptr +="body{margin-top: 50px;} h1 {color: #444444;margin: 50px auto 30px;} h3 {color: #444444;margin-bottom: 50px;}\n";
-  ptr +=".button {display: block;width: 80px;background-color: #3498db;border: none;color: white;padding: 13px 30px;text-decoration: none;font-size: 25px;margin: 0px auto 35px;cursor: pointer;border-radius: 4px;}\n";
-  ptr +=".button-on {background-color: #3498db;}\n";
-  ptr +=".button-on:active {background-color: #2980b9;}\n";
-  ptr +=".button-off {background-color: #34495e;}\n";
-  ptr +=".button-off:active {background-color: #2c3e50;}\n";
   ptr +="p {font-size: 14px;color: #888;margin-bottom: 10px;}\n";
   ptr +="</style>\n";
   ptr +="</head>\n";
@@ -203,28 +197,6 @@ String SendHTML(uint8_t led1stat,uint8_t led2stat){
   ptr +="<p>ESP_USER[";
   ptr += Tmp_user_Output;
   ptr += "]</p>\n";
-    ptr +="<h3>Using Station(STA) Mode</h3>\n";
-
-  ptr += "<form action=\"/action_page.php\">";
-  ptr += "<label for=\"fname\">First name:</label>";
-  ptr += "<input type=\"text\" id=\"fname\" name=\"fname\"><br><br>";
-  ptr += "<label for=\"lname\">Last name:</label>";
-  ptr += "<input type=\"text\" id=\"lname\" name=\"lname\"><br><br>";
-  ptr += "<input type=\"submit\" value=\"Submit\">";
-  ptr += "</form>";
-  
-
-  
-   if(led1stat)
-  {ptr +="<p>LED1 Status: ON</p><a class=\"button button-off\" href=\"/led1off\">OFF</a>\n";}
-  else
-  {ptr +="<p>LED1 Status: OFF</p><a class=\"button button-on\" href=\"/led1on\">ON</a>\n";}
-
-  if(led2stat)
-  {ptr +="<p>LED2 Status: ON</p><a class=\"button button-off\" href=\"/led2off\">OFF</a>\n";}
-  else
-  {ptr +="<p>LED2 Status: OFF</p><a class=\"button button-on\" href=\"/led2on\">ON</a>\n";}
-
   ptr +="</body>\n";
   ptr +="</html>\n";
   return ptr;
