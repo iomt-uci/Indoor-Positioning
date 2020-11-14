@@ -116,7 +116,7 @@ void loop()
                 Serial.print(rssi);
                 Serial.print("\n");
               }
-              if(rssi >= -90 && ssid.length() == 10 && ssid.substring(0,9) == "ESP32-USR" ){
+              if(rssi >= -90 && ssid.length() == 11 && ssid.substring(0,9) == "ESP32-USR" ){
                 int temp_ind = (ssid.substring(9,11)).toInt();
                 Serial.print(temp_ind);
                 ESP_USR[temp_ind] = rssi;
