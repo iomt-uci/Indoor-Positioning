@@ -5,8 +5,9 @@
 
 double rssi = 0;
 String ssid;
-
+String device_Name = "Device 0";
 String Tmp_Output = "";
+String Tmp_user_Output = "";
 const char* APssid     = "ESP32-USR00";
 const char* APpassword = "123456789";
 
@@ -14,7 +15,7 @@ const char* STAssid = "ORBI12";
 const char* STApassword =  "coolmango116";
 
 double ESP_AP[8] = {-90,-90,-90,-90,-90,-90,-90,-90};
-
+double ESP_USR[3] = {-90,-90,-90}
 WiFiServer server1(80);
 WebServer server2(80);
 
@@ -100,6 +101,7 @@ void loop()
             ESP_AP[i] = -90;
           }
           Tmp_Output = "";
+          Tmp_user_Output = "";
           for (int i = 0; i < n; ++i) {
               rssi = WiFi.RSSI(i);
               ssid = WiFi.SSID(i);
@@ -107,17 +109,30 @@ void loop()
                 int temp_ind = (ssid.substring(8,10)).toInt();
                 Serial.print(temp_ind);
                 ESP_AP[temp_ind] = rssi;
+                ESP_USR[temp_ind] = rssi;
                 Serial.print(": SSID: ");
                 Serial.print(ssid);
                 Serial.print(" RSSI: ");
                 Serial.print(rssi);
                 Serial.print("\n");
-                
+              }
+              if(rssi >= -90 && ssid.length() == 10 && ssid.substring(0,9) == "ESP32-USR" ){
+                int temp_ind = (ssid.substring(9,11)).toInt();
+                Serial.print(temp_ind);
+                ESP_USR[temp_ind] = rssi;
+                // Serial.print(": SSID: ");
+                // Serial.print(ssid);
+                // Serial.print(" RSSI: ");
+                // Serial.print(rssi);
+                // Serial.print("\n");
               }
               delay(10);
           }
           for(int i=0;i<8;i++){
             Tmp_Output += String(ESP_AP[i])+",";
+          }
+          for(int i=0;i<3;i++){
+            Tmp_user_Output += String(ESP_USR[i])+",";
           }
         }
        tl_timer = millis();
@@ -179,8 +194,14 @@ String SendHTML(uint8_t led1stat,uint8_t led2stat){
   ptr +="</style>\n";
   ptr +="</head>\n";
   ptr +="<body>\n";
+  ptr +="<p>Device ID:";
+  ptr += device_Name;
+  ptr += "</p>\n";
   ptr +="<p>ESP_AP[";
   ptr += Tmp_Output;
+  ptr += "]</p>\n";
+  ptr +="<p>ESP_USER[";
+  ptr += Tmp_user_Output;
   ptr += "]</p>\n";
     ptr +="<h3>Using Station(STA) Mode</h3>\n";
 
